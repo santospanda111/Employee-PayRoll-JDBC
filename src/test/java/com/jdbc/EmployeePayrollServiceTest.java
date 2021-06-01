@@ -28,4 +28,19 @@ public class EmployeePayrollServiceTest {
         boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
         Assertions.assertTrue(result);
     }
+
+    /**
+     * this method will check whether the salary is updated or not by using prepared statement.
+     * @throws EmployeePayrollException
+     */
+    @Test
+    public void givenEmployeePayroll_WhenUpdatedUsingPreparedStatement_ShouldSyncWithDB() throws EmployeePayrollException {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        List<EmployeePayrollData> employeePayrollData;
+        employeePayrollData =employeePayrollService.readEmployeePayrollData();
+        employeePayrollService.updateEmployeeSalary("Terisa",3000000.00);
+        boolean result=employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
+        Assertions.assertTrue(result);
+    }
+
 }

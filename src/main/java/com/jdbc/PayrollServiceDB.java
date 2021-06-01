@@ -6,6 +6,8 @@ import java.sql.*;
 import java.time.LocalDate;
 
 public class PayrollServiceDB {
+    private static PayrollServiceDB employeePayrollServiceDB;
+    private PreparedStatement preparedStatement;
 
     public PayrollServiceDB() {
     }
@@ -94,6 +96,42 @@ public class PayrollServiceDB {
             return rowsAffected;
         } catch (SQLException e) {
             throw new EmployeePayrollException("Unable To update data in database");
+        }
+    }
+
+    /**
+     * this method will update the salary using prepared statement.
+     * @param name
+     * @param salary
+     * @return
+     * @throws EmployeePayrollException
+     */
+    public int updateEmployeePayrollDataUsingPreparedStatement(String name, double salary)
+            throws EmployeePayrollException {
+        if (this.preparedStatement == null) {
+            this.prepareStatementForEmployeePayroll();
+        }
+        try {
+            preparedStatement.setDouble(1, salary);
+            preparedStatement.setString(2, name);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected;
+        } catch (SQLException e) {
+            throw new EmployeePayrollException("Unable to use prepared statement");
+        }
+    }
+
+    /**
+     * this method will execute the statement.
+     * @throws EmployeePayrollException
+     */
+    private void prepareStatementForEmployeePayroll() throws EmployeePayrollException {
+        try {
+            Connection connection = this.getConnection();
+            String sql = "UPDATE employee_payroll SET salary=? WHERE name=?";
+            this.preparedStatement = connection.prepareStatement(sql);
+        } catch (SQLException e) {
+            throw new EmployeePayrollException("Unable to prepare statement");
         }
     }
 }
