@@ -43,11 +43,6 @@ public class EmployeePayrollServiceTest {
         boolean result=employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
         Assertions.assertTrue(result);
     }
-
-    /**
-     * It'll check the payroll data in a given date range.
-     * @throws EmployeePayrollException
-     */
     /**
      * this method will check the data is present in a given date range or not.
      * @throws EmployeePayrollException
@@ -60,5 +55,17 @@ public class EmployeePayrollServiceTest {
         LocalDate endDate = LocalDate.now();
         List<EmployeePayrollData> matchingRecords = employeePayrollService.getEmployeePayrollDataByStartDate(startDate,endDate);
         Assertions.assertEquals(matchingRecords.get(0), employeePayrollService.getEmployeePayrollData("Bill"));
+    }
+
+    /**
+     * this test case will check the max salary group by gender.
+     * @throws EmployeePayrollException
+     */
+    @Test
+    public void givenEmployee_PerformedVariousOperations_ShouldGiveResult() throws EmployeePayrollException {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        employeePayrollService.readEmployeePayrollData();
+        Map<String, Double> maxSalaryByGender = employeePayrollService.performOperationByGender("salary", "MAX");
+        Assertions.assertEquals(3000000.0, maxSalaryByGender.get("F"), 0.0);
     }
 }

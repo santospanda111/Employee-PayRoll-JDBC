@@ -3,24 +3,31 @@ package com.jdbc;
 import java.time.LocalDate;
 
 public class EmployeePayrollData {
-    public int id;
-    public String name;
-    public double salary;
-    public LocalDate startDate;
+    private int id;
+    private String name;
+    private String gender;
+    private double salary;
+    private LocalDate startDate;
 
     /**
-     * this constructor will initialise the values of the given parameters.
+     * this constructor will initialise the value.
      * @param id
      * @param name
+     * @param gender
      * @param salary
-     * @param startDate
      */
-    public EmployeePayrollData(int id, String name, double salary, LocalDate startDate) {
+    public EmployeePayrollData(Integer id, String name, String gender, Double salary) {
         this.id = id;
         this.name = name;
+        this.gender = gender;
         this.salary = salary;
+    }
+
+    public EmployeePayrollData(int id, String name, String gender, double salary, LocalDate startDate) {
+        this(id, name, gender, salary);
         this.startDate = startDate;
     }
+
     public int getId() {
         return id;
     }

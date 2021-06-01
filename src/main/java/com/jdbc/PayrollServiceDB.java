@@ -46,9 +46,10 @@ public class PayrollServiceDB {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
+                String gender = resultSet.getString("gender");
                 double salary = resultSet.getDouble("salary");
                 LocalDate startDate = resultSet.getDate("start").toLocalDate();
-                employeePayrollList.add(new EmployeePayrollData(id, name, salary, startDate));
+                employeePayrollList.add(new EmployeePayrollData(id,name,gender,salary,startDate));
             }
         } catch (SQLException e) {
             throw new EmployeePayrollException("Unable to Retrieve data From Table!");
@@ -70,10 +71,11 @@ public class PayrollServiceDB {
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                String objectname = resultSet.getString("name");
+                String name1 = resultSet.getString("name");
+                String gender = resultSet.getString("gender");
                 double salary = resultSet.getDouble("salary");
                 LocalDate start = resultSet.getDate("start").toLocalDate();
-                employeePayrollList.add(new EmployeePayrollData(id, objectname, salary, start));
+                employeePayrollList.add(new EmployeePayrollData(id, name1,gender,salary, start));
             }
             return employeePayrollList;
         } catch (SQLException e) {
@@ -146,10 +148,11 @@ public class PayrollServiceDB {
         try {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                String objectname = resultSet.getString("name");
+                String name = resultSet.getString("name");
+                String gender = resultSet.getString("gender");
                 double salary = resultSet.getDouble("salary");
                 LocalDate startDate = resultSet.getDate("start").toLocalDate();
-                employeePayrollList.add(new EmployeePayrollData(id, objectname, salary, startDate));
+                employeePayrollList.add(new EmployeePayrollData(id, name,gender, salary, startDate));
             }
             return employeePayrollList;
         } catch (SQLException e) {
@@ -175,5 +178,28 @@ public class PayrollServiceDB {
         } catch (SQLException e) {
             throw new EmployeePayrollException("Connection Failed.");
         }
+    }
+
+    /**
+     * this method will return the values according to the mathematical functions.
+     * @param column
+     * @param operation
+     * @return
+     * @throws EmployeePayrollException
+     */
+    public Map<String, Double> performAverageAndMinAndMaxOperations(String column, String operation)
+            throws EmployeePayrollException {
+        String sql = String.format("SELECT gender,%s(%s) FROM employee_payroll GROUP BY gender;", operation, column);
+        Map<String, Double> mapValues = new HashMap<>();
+        try (Connection connection = this.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                mapValues.put(resultSet.getString(1), resultSet.getDouble(2));
+            }
+        } catch (SQLException e) {
+            throw new EmployeePayrollException("Connection Failed.");
+        }
+        return mapValues;
     }
 }

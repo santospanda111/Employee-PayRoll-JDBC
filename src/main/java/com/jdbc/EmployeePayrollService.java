@@ -66,4 +66,16 @@ public class EmployeePayrollService {
             throws EmployeePayrollException {
         return this.payrollServiceDB.getEmployeePayrollDataByStartingDate(startDate, endDate);
     }
+
+    /**
+     * this will perform mathematical operations group by gender.
+     * @param column
+     * @param operation
+     * @return
+     * @throws EmployeePayrollException
+     */
+    public Map<String, Double> performOperationByGender(String column, String operation)
+            throws EmployeePayrollException {
+        return this.payrollServiceDB.performAverageAndMinAndMaxOperations(column, operation);
+    }
 }
