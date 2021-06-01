@@ -1,4 +1,5 @@
 package com.jdbc;
+import java.time.LocalDate;
 import java.util.*;
 
 public class EmployeePayrollService {
@@ -44,7 +45,7 @@ public class EmployeePayrollService {
      * this method will return the data according to name.
      * @param name
      */
-    private EmployeePayrollData getEmployeePayrollData(String name) {
+    public EmployeePayrollData getEmployeePayrollData(String name) {
         return this.employeePayrollList.stream()
                 .filter(employeePayrollObject -> employeePayrollObject.getName().equals(name)).findFirst().orElse(null);
     }
@@ -52,5 +53,17 @@ public class EmployeePayrollService {
     public boolean checkEmployeePayrollInSyncWithDB(String name) throws EmployeePayrollException {
         List<EmployeePayrollData> employeePayrollDataList = new PayrollServiceDB().getEmployeePayrollDataFromDB(name);
         return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
+    }
+
+    /**
+     * this will get the data in a given date range.
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws EmployeePayrollException
+     */
+    public List<EmployeePayrollData> getEmployeePayrollDataByStartDate(LocalDate startDate, LocalDate endDate)
+            throws EmployeePayrollException {
+        return this.payrollServiceDB.getEmployeePayrollDataByStartingDate(startDate, endDate);
     }
 }

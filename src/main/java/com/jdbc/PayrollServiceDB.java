@@ -134,4 +134,46 @@ public class PayrollServiceDB {
             throw new EmployeePayrollException("Unable to prepare statement");
         }
     }
+
+    /**
+     * this method will give result according to the sql query.
+     * @param resultSet
+     * @throws EmployeePayrollException
+     */
+    private List<EmployeePayrollData> getEmployeePayrollListFromResultset(ResultSet resultSet)
+            throws EmployeePayrollException {
+        List<EmployeePayrollData> employeePayrollList = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String objectname = resultSet.getString("name");
+                double salary = resultSet.getDouble("salary");
+                LocalDate startDate = resultSet.getDate("start").toLocalDate();
+                employeePayrollList.add(new EmployeePayrollData(id, objectname, salary, startDate));
+            }
+            return employeePayrollList;
+        } catch (SQLException e) {
+            throw new EmployeePayrollException("Unable to use the result set!");
+        }
+    }
+
+    /**
+     * this method will check the data in a given date range.
+     * @param startDate
+     * @param endDate
+     * @throws EmployeePayrollException
+     */
+    public List<EmployeePayrollData> getEmployeePayrollDataByStartingDate(LocalDate startDate, LocalDate endDate)
+            throws EmployeePayrollException {
+        String sql = String.format(
+                "SELECT * FROM employee_payroll WHERE start BETWEEN cast('%s' as date) and cast('%s' as date);",
+                startDate.toString(), endDate.toString());
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            return this.getEmployeePayrollListFromResultset(resultSet);
+        } catch (SQLException e) {
+            throw new EmployeePayrollException("Connection Failed.");
+        }
+    }
 }
